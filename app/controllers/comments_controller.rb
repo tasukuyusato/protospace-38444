@@ -2,12 +2,15 @@ class CommentsController < ApplicationController
 
   def create
     @comment = Comment.new(comment_params)
+    # @prototype = Prototype.all
     if @comment.save
       redirect_to prototype_path(@comment.prototype) 
     else
-      @prototype = @comment.comment
-      @comments = @prototype.comment
+      @prototype = Prototype.find(params[:prototype_id])
+      @comment = Comment.new
+      @comments = @prototype.comments.includes(:user)
       render "prototypes/show" 
+      # rendeで失敗した時に、showのビューを表示させるために必要なインスタンス変数を用意する
     end
   end
 
